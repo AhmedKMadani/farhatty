@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/spacing_medium">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_xmedium"
+        android:paddingRight="@dimen/spacing_xmedium">
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Booking_number"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/book_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/value_15dp"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event_date"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/event_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/booking_status"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/book_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/booking_Name"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/booking_date"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/book_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/booking_phone"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="@string/booking_total"
+            android:paddingTop="@dimen/value_10dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:paddingRight="@dimen/value_15dp"
+            android:textColorLink="@color/colorPrimary" />
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+

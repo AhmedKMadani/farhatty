@@ -1,0 +1,161 @@
+<resources>
+    <string name="app_name">Farhatty</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="nav_text_offer">Offers</string>
+    <string name="nav_text_history">History</string>
+    <string name="nav_text_contact">Contact Us</string>
+    <string name="nav_text_log">Log Out</string>
+    <string name="nav_text_service">Services</string>
+    <string name="nav_text_home">Home</string>
+    <string name="nav_text_track">Track Booking</string>
+
+    <string name="booking_details">Booking Details</string>
+    <string name="insert_book">Insert your Booking number</string>
+    <string name="nav_text_social">Social</string>
+    <string name="nav_text_faq">FAQ</string>
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="order">ORDER NOW</string>
+
+    <string name="slide_1_title"> Farhatty </string>
+    <string name="slide_1_desc"> All Wedding Halls in One Application </string>
+
+    <string name="slide_2_title"> Farhatty </string>
+    <string name="slide_2_desc"> All Artist in One Application</string>
+
+    <string name="slide_3_title"> Farhatty </string>
+    <string name="slide_3_desc"> All your wedding needs in One Application </string>
+
+    <string name="slide_4_title"> Farhatty </string>
+    <string name="slide_4_desc"> Your Wedding On Us </string>
+
+
+    <string name="re_tap_text">Double tap to exit</string>
+    <string name="nav_text_rate">Rate this App</string>
+
+
+    <string name="service_text_wedding_halls">Wedding Halls</string>
+    <string name="service_text_artists">Artists</string>
+    <string name="service_text_hotel_apartments">Hotel Apartments</string>
+    <string name="service_text_coiffure">Coiffure</string>
+    <string name="service_text_photo_studio">Photographer and Photography Studios </string>
+    <string name="service_text_chefs">Chefs </string>
+    <string name="service_text_cras">Wedding carts</string>
+    <string name="service_text_ms">Men\'s Salons</string>
+
+
+    <string name="company_mail">info@farhatty.com</string>
+    <string name="company_web_page">www.farhatty.com</string>
+    <string name="company_phone">2537</string>
+    <string name="company_address">Khartoum Sudan</string>
+    <string name="company_intro">www.farhatty.com</string>
+
+    <string name="maps_api_key">AIzaSyD1THqz62XnQXJwEI4ZW152AWAJb5XJpOs</string>
+
+    <string name="unit_meter">m</string>
+    <string name="unit_kilometer">km</string>
+    <string name="unit_mile">mi</string>
+
+
+    <string name="toolbar_title">Wedding Halls</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Type name…</string>
+
+
+    <string name="fragment_poi_detail_info_title">Info</string>
+    <string name="fragment_poi_detail_map_title">Map</string>
+    <string name="fragment_poi_detail_map_explore">Explore</string>
+    <string name="fragment_poi_detail_map_navigate">Navigate</string>
+    <string name="fragment_poi_detail_extra_title">Services</string>
+
+
+    <string name="invalid_name">invalid name</string>
+    <string name="invalid_email">invalid email</string>
+    <string name="invalid_phone">invalid phone</string>
+    <string name="invalid_address">invalid address</string>
+    <string name="invalid_payment">invalid Payment Method</string>
+    <string name="invalid_date_res">invalid Date Reservation</string>
+    <string name="invalid_comment">invalid comment</string>
+    <string name="invalid_date">Date Reservation is unavilable </string>
+
+    <string name="currency">SDG</string>
+    <string name="cost_details">Cost Details</string>
+    <string name="total_order">Total Order :&#160;</string>
+    <string name="services_order">Services&#160;</string>
+    <string name="total_fess">Total Fees :&#160;</string>
+    <string name="buyer_profile">Profile</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_shipping">Payment</string>
+    <string name="choose_shipping">Payment Method</string>
+    <string name="hint_date_res">Reservation Date</string>
+    <string name="hint_comment">Comment</string>
+    <string name="process_checkout">PROCESS CHECKOUT</string>
+    <string name="title_activity_checkout">CHECKOUT</string>
+
+    <string name="no_internet_connection">No internet connection!</string>
+    <string name="retry">RETRY</string>
+
+    <string name="not_fetching">Couldn\'t fetch Data Pleas try again</string>
+    <string name="hint_date_ship">Reservation Date</string>
+
+    <string name="title_please_wait">Please Wait</string>
+    <string name="content_submit_checkout">Submit Checkout&#8230;</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="confirm_checkout">Are you sure want to checkout this order?</string>
+    <string name="failed_checkout">Oops, Failed when checkout order   Make sure you have internet connection, or if you need help please Contact Us from menu Settings</string>
+    <string name="success_checkout">Congratulation</string>
+    <string name="msg_success_checkout">
+        Successfully checkout order.\nYour order code : %1$s\n\nYour order will be review soon.One of Farhatty team will contact you.
+    </string>
+
+    <string name="title_getting_data">Please wait until data loaded</string>
+    <string name="Booking_Number">Booking Number</string>
+
+    <string name="CANCEL">CANCEL</string>
+    <string name="GOT_IT">GOT IT</string>
+    <string name="YES">YES</string>
+    <string name="NO">NO</string>
+    <string name="SETTING">SETTING</string>
+    <string name="TRY_AGAIN">TRY AGAIN</string>
+    <string name="FAILED">FAILED</string>
+    <string name="failed">Failed</string>
+    <string name="OK">OK</string>
+    <string name="view_more">View More</string>
+    <string name="sub_title_nav_others">Others</string>
+    <string name="Order_List">Order List</string>
+    <string name="Close">Close</string>
+    <string name="tax">Services Cost</string>
+
+    <string name="Booking_number">Booking Number : </string>
+    <string name="event_date">Event Date : </string>
+    <string name="booking_status">Booking Status : </string>
+    <string name="booking_Name">Name : </string>
+    <string name="booking_date">Booking Date : </string>
+    <string name="booking_phone">Phone : </string>
+    <string name="booking_total">Total : </string>
+
+
+    <string name="failed_getting">
+        Oops, Failed when getting data from server
+        \n\nMake sure you have internet connection, and try Again
+    </string>
+
+    <string name="cash">Cash</string>
+    <string name="exit_confirm">Are you sure you want to exit?</string>
+    <string name="number_days">Number of Days</string>
+    <string name="number_days_error">Number of days should be greater than 0 </string>
+    <string name="days">Day</string>
+
+    <string name="number_day">Number of Days : </string>
+    <string name="valid_date">Date Reservation is avilable </string>
+    <string name="check_data">Dear Customer please wait while we check the a availability of the date</string>
+
+</resources>
+

@@ -1,0 +1,262 @@
+<resources>
+
+    <!--parent theme-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/heading_text_color</item>
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+        <item name="android:colorBackground">@color/activityColor</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">false</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="FullScreenTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="ActivityTheme" parent= "AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextAppearance.CityGuide.Display4" parent="@style/TextAppearance.AppCompat.Display4">
+        <item name="android:textSize">@dimen/global_text_size_display_4</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display3" parent="@style/TextAppearance.AppCompat.Display3">
+        <item name="android:textSize">@dimen/global_text_size_display_3</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display2" parent="@style/TextAppearance.AppCompat.Display2">
+        <item name="android:textSize">@dimen/global_text_size_display_2</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display1" parent="@style/TextAppearance.AppCompat.Display1">
+        <item name="android:textSize">@dimen/global_text_size_display_1</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Headline" parent="@style/TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">@dimen/global_text_size_headline</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Title" parent="@style/TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/global_text_size_title</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Subhead" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">@dimen/global_text_size_subhead</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Body2" parent="@style/TextAppearance.AppCompat.Body2">
+        <item name="android:textSize">@dimen/global_text_size_body_2</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Body1" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">@dimen/global_text_size_body_1</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Caption" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/global_text_size_caption</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Button" parent="@style/TextAppearance.AppCompat.Button">
+        <item name="android:textSize">@dimen/global_text_size_button</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Menu" parent="@style/TextAppearance.AppCompat.Menu">
+        <item name="android:textSize">@dimen/global_text_size_menu</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Placeholder" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">@dimen/global_text_size_placeholder</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display4.Inverse" parent="@style/TextAppearance.CityGuide.Display4">
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display3.Inverse" parent="@style/TextAppearance.CityGuide.Display3">
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display2.Inverse" parent="@style/TextAppearance.CityGuide.Display2">
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Display1.Inverse" parent="@style/TextAppearance.CityGuide.Display1">
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Headline.Inverse" parent="@style/TextAppearance.CityGuide.Headline">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Title.Inverse" parent="@style/TextAppearance.CityGuide.Title">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Subhead.Inverse" parent="@style/TextAppearance.CityGuide.Subhead">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Body2.Inverse" parent="@style/TextAppearance.CityGuide.Body2">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Body1.Inverse" parent="@style/TextAppearance.CityGuide.Body1">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Caption.Inverse" parent="@style/TextAppearance.CityGuide.Caption">
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Button.Inverse" parent="@style/TextAppearance.CityGuide.Button">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="TextAppearance.CityGuide.Menu.Inverse" parent="@style/TextAppearance.CityGuide.Menu">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlightInverse</item>
+        <item name="android:textColorLink">?android:attr/textColorLinkInverse</item>
+    </style>
+
+    <style name="Widget.CityGuide.Toolbar" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+
+
+    <style name="RippleStyleWhite">
+        <item name="mrl_rippleOverlay">true</item>
+        <item name="mrl_rippleColor">#80FFFFFF</item>
+        <item name="mrl_rippleHover">true</item>
+        <item name="mrl_rippleAlpha">0.2</item>
+    </style>
+
+    <style name="RippleStyleBlack" parent="RippleStyleWhite">
+        <item name="mrl_rippleColor">#8096989A</item>
+    </style>
+
+    <style name="TagGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/value_40dp</item>
+        <item name="atg_isAppendMode">false</item>
+        <!--<item name="atg_inputHint">@string/add_tag</item>-->
+        <item name="atg_borderColor">#FFFFFF</item>
+        <item name="atg_textColor">#FFFFFF</item>
+        <item name="atg_backgroundColor">@android:color/transparent</item>
+        <item name="atg_dashBorderColor">#60FFFFFF</item>
+        <item name="atg_inputHintColor">#80000000</item>
+        <item name="atg_inputTextColor">#DE000000</item>
+        <item name="atg_checkedBorderColor">#49C120</item>
+        <item name="atg_checkedTextColor">#FFFFFF</item>
+        <item name="atg_checkedMarkerColor">#FFFFFF</item>
+        <item name="atg_checkedBackgroundColor">#49C120</item>
+        <item name="atg_pressedBackgroundColor">#60FFFFFF</item>
+        <item name="atg_borderStrokeWidth">0.5dp</item>
+        <item name="atg_textSize">13sp</item>
+        <item name="atg_horizontalSpacing">6dp</item>
+        <item name="atg_verticalSpacing">4dp</item>
+        <item name="atg_horizontalPadding">12dp</item>
+        <item name="atg_verticalPadding">3dp</item>
+    </style>
+
+    <style name="TagGroup.Large" parent="TagGroup">
+        <item name="atg_borderStrokeWidth">0.7dp</item>
+        <item name="atg_textSize">15sp</item>
+        <item name="atg_horizontalSpacing">12dp</item>
+        <item name="atg_verticalSpacing">7dp</item>
+        <item name="atg_horizontalPadding">15dp</item>
+        <item name="atg_verticalPadding">7dp</item>
+    </style>
+
+    <style name="TagGroup.Small" parent="TagGroup">
+        <item name="android:layout_height">@dimen/value_30dp</item>
+        <item name="android:layout_marginBottom">@dimen/value_3dp</item>
+        <item name="atg_borderStrokeWidth">0.7dp</item>
+        <item name="atg_textSize">13sp</item>
+        <item name="atg_horizontalSpacing">10dp</item>
+        <item name="atg_verticalSpacing">3dp</item>
+        <item name="atg_horizontalPadding">10dp</item>
+        <item name="atg_verticalPadding">5dp</item>
+        <item name="atg_textColor">@color/client_tag_color</item>
+        <item name="atg_borderColor">@color/client_tag_border_color</item>
+        <item name="atg_pressedBackgroundColor">@color/client_tag_pressed_color</item>
+    </style>
+
+
+    <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+</resources>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_drawer_open">افتح</string>
+    <string name="navigation_drawer_close">اغلاق</string>
+    <string name="nav_text_offer">العروض</string>
+    <string name="nav_text_history">الأرشيف</string>
+    <string name="nav_text_home">الرئيسية</string>
+    <string name="nav_text_contact">تواصل معنا</string>
+    <string name="nav_text_log">تسجيل الدخول</string>
+    <string name="nav_text_service">الخدمات</string>
+    <string name="nav_text_social">تواصل الأجتماعي</string>
+    <string name="nav_text_faq">الأسئلة المتكررة</string>
+    <string name="nav_text_track">متابعة الحجوزات </string>
+
+    <string name="booking_details">تفاصيل الحجز </string>
+    <string name="insert_book">الرجاء ادخال رقم الحجز </string>
+    <string name="service_text_wedding_halls">صالات الأفراح</string>
+    <string name="service_text_artists">الفنانين</string>
+    <string name="service_text_hotel_apartments">الشقق الفندقية </string>
+    <string name="service_text_coiffure">كوافير</string>
+    <string name="service_text_photo_studio">المصورين ومراكز التصوير</string>
+    <string name="service_text_chefs">تجهيز وجبات المناسبات</string>
+    <string name="nav_text_rate">تقييم البرنامج</string>
+    <string name="re_tap_text"> اضغط مرتين للخروج</string>
+    <string name="app_name">فرحتي</string>
+    <string name="search_hint">ابحث عن ...</string>
+    <string name="action_search">بحث</string>
+    <string name="company_mail">info@farhatty.com</string>
+    <string name="company_web_page">www.farhatty.com</string>
+    <string name="company_address">الخرطوم السودان</string>
+    <string name="company_intro">www.farhatty.com</string>
+    <string name="next">التالي</string>
+    <string name="skip">تخطي</string>
+    <string name="slide_1_title">" مع فرحتي "</string>
+    <string name="slide_1_desc">" كل الصالات في  تطبيق واحد"</string>
+    <string name="slide_2_title">" مع فرحتي "</string>
+    <string name="slide_2_desc">" كل الفنانين في تطبيق واحد"</string>
+    <string name="slide_3_title">"مع فرحتي "</string>
+    <string name="slide_3_desc">"كل احتياجات زفافك في تطبيق واحد "</string>
+    <string name="slide_4_title">"مع فرحتي "</string>
+    <string name="slide_4_desc">" عرسك علينا "</string>
+    <string name="unit_meter">متر</string>
+    <string name="unit_kilometer">كيلو</string>
+    <string name="unit_mile">ميل</string>
+    <string name="fragment_poi_detail_info_title">معلومات</string>
+    <string name="maps_api_key">AIzaSyDG0_SYSa2bO3oPUmHQJIIUl4HbgJrbfaI</string>
+    <string name="fragment_poi_detail_map_title">الخريطة</string>
+    <string name="fragment_poi_detail_map_explore">تصفح</string>
+    <string name="fragment_poi_detail_map_navigate">وصول</string>
+
+    <string name="toolbar_title">صالات الأفراح</string>
+    <string name="company_phone">2537</string>
+    <string name="start">أبداء</string>
+    <string name="order">اطلب الأن</string>
+    <string name="cost_details">تفاصيل المبلغ </string>
+    <string name="total_order">المبلغ الأساسي</string>
+    <string name="tax">قيمة الخدمات</string>
+    <string name="total_fess">السعر النهائي </string>
+    <string name="buyer_profile">الحساب الشخصي</string>
+    <string name="hint_name">الأسم</string>
+    <string name="hint_email">البريد الألكتروني</string>
+    <string name="hint_phone">رقم الهاتف</string>
+    <string name="hint_address">العنوان</string>
+    <string name="hint_shipping">الدفع</string>
+    <string name="choose_shipping">خيارات الدفع </string>
+    <string name="hint_date_ship">تاريخ الحجز </string>
+    <string name="hint_comment">تعليقات </string>
+    <string name="process_checkout">متابعة الطلب</string>
+    <string name="fragment_poi_detail_extra_title">الخدمات </string>
+
+    <string name="no_internet_connection">لا يوجد اتصال بالأنترنت !</string>
+    <string name="retry">محاولة مرة آخري </string>
+
+    <string name="not_fetching">تعذر الحصول علي المعلومات , الرجاء المحاولة مرة آخري </string>
+
+
+    <string name="invalid_name">الأسم غير صالح </string>
+    <string name="invalid_email">البريد الألكتروني غير صالح </string>
+    <string name="invalid_phone">رقم الهاتف غير صالح </string>
+    <string name="invalid_address">العنوان غير صالح </string>
+    <string name="invalid_payment">طريقة الدفع غير صالحة</string>
+    <string name="invalid_date_res">تاريخ الحجز غير صالح </string>
+    <string name="invalid_comment">التعليق غير صالح </string>
+    <string name="invalid_date"> تاريخ الحجز غير متاح </string>
+
+    <string name="currency">ج.س </string>
+    <string name="hint_date_res">تاريخ الحجز </string>
+    <string name="title_activity_checkout">الحجز</string>
+    <string name="service_text_cras">عربات الزفة </string>
+    <string name="service_text_ms">الصالونات الرجالية </string>
+
+
+    <string name="title_getting_data">الرجاء الانتظار ريثما يتم تحميل البيانات</string>
+
+    <string name="title_please_wait">الرجاء الانتظار</string>
+    <string name="content_submit_checkout">تقديم الطلب &#8230;</string>
+    <string name="confirmation">تأكيد</string>
+    <string name="confirm_checkout">هل تريد تأكيد متابعة الطلب؟</string>
+    <string name="failed_checkout">
+        عفوا، فشل عندما اجراء الطلب تأكد لديك اتصال بالإنترنت، أو إذا كنت بحاجة إلى مساعدة يرجى الاتصال بنا من إعدادات القائمة
+    </string>
+    <string name="success_checkout">مبروك</string>
+    <string name="msg_success_checkout">
+      سوف يقوم احد افراد فريق فرحتي بالاتصال بك   %1$s\n\n : تم قبول الطلب بنجاح رقم الطلب
+    </string>
+    <string name="Booking_Number">رقم الحجز</string>
+
+    <string name="CANCEL">الغاء</string>
+    <string name="GOT_IT"> فهمت </string>
+    <string name="YES">نعم </string>
+    <string name="NO">لا</string>
+    <string name="SETTING">الأعدادت</string>
+    <string name="TRY_AGAIN">محاولة مرةاخرى</string>
+    <string name="FAILED">فشل</string>
+    <string name="failed">فشل</string>
+    <string name="OK">موافق</string>
+
+    <string name="view_more">عرض المزيد</string>
+    <string name="sub_title_nav_others">اخرى</string>
+    <string name="services_order">الخدمات&#160;</string>
+    <string name="Order_List">قائمة الطلبات</string>
+
+    <string name="Close">اغلاق</string>
+
+    <string name="Booking_number">رقم الحجز : </string>
+    <string name="event_date">  تاريخ المناسبة :</string>
+    <string name="booking_status">حالة الحجز :</string>
+    <string name="booking_Name">الاسم : </string>
+    <string name="booking_date"> تاريخ الحجز :</string>
+    <string name="booking_phone">رقم الهاتف : </string>
+    <string name="booking_total">اجمالي السعر : </string>
+
+    <string name="failed_getting">
+        فشل في الحصول علي البيانات من السيرفر الرجاء مراجعة اتصالك بالأنترنت و المحاولة مرة اخرى
+    </string>
+
+    <string name="cash">نقدي</string>
+    <string name="exit_confirm">هل أنت متأكد أنك تريد الخروج؟</string>
+    <string name="number_days">عدد الأيام</string>
+    <string name="number_days_error">عدد الأيام يجب ان يكون اكثر من 0  </string>
+    <string name="days">يوم</string>
+    <string name="number_day">عدد الأيام : </string>
+
+    <string name="valid_date">تاريخ الحجز متاح</string>
+    <string name="check_data">عميلنا العزيز اللرجاء الأنتظار ريثما يتم التحقق من اتاحة التاريخ </string>
+</resources>

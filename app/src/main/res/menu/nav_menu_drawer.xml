@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/nav_text_home"
+            />
+
+        <item
+            android:id="@+id/nav_service"
+            android:title="@string/nav_text_service"
+          />
+        <item
+            android:id="@+id/nav_offer"
+            android:title="@string/nav_text_offer"
+           />
+
+        <item
+            android:id="@+id/nav_track"
+            android:title="@string/nav_text_track"
+            />
+
+    </group>
+
+    <item android:title="@string/sub_title_nav_others">
+        <menu>
+
+        <item
+                android:id="@+id/nav_faq"
+                android:title="@string/nav_text_faq"
+            />
+        <item
+            android:id="@+id/nav_contact_us"
+            android:title="@string/nav_text_contact"
+            />
+
+        <item
+            android:id="@+id/nav_rate"
+            android:checkable="false"
+            android:title="@string/nav_text_rate" />
+        </menu>
+    </item>
+</menu>

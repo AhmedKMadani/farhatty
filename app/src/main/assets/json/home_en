@@ -1,0 +1,34 @@
+{
+  "projects": [
+    {
+      "name": "Farhatty",
+      "image": "img_home_1",
+      "project_info": [
+         {
+          "platform": "Wedding Halls ",
+          "url": "http://farhatty.com"
+        } 
+      ]
+    },
+    {
+      "name": "Farhatty",
+      "image": "img_home_2",
+      "project_info": [
+         {
+          "platform": "Singers",
+          "url": "http://farhatty.com"
+        } 
+      ]
+    },
+    {
+      "name": "Farhatty",
+      "image": "img_home_3",
+      "project_info": [
+        {
+          "platform": "Coiffure",
+          "url": "http://farhatty.com"
+        }
+      ]
+    }
+  ]
+}
