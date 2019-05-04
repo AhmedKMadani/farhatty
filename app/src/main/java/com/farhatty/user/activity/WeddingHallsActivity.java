@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -20,19 +19,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
-import org.ksoap2.serialization.PropertyInfo;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
@@ -51,13 +55,7 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-    SoapObject result = null;
-
-    private static String SOAP_ACTION = "http://farhatty.sd/GetHalls";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "GetHalls";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
-
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/hall.json";
 
 
     @Override
@@ -70,11 +68,11 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
 
 
         ActionBar actionBar;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pbar = (ProgressBar) findViewById(R.id.pbar_wedding);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+        pbar = findViewById(R.id.pbar_wedding);
+        coordinatorLayout = findViewById(R.id
                 .coordinatorLayout);
 
         actionBar = getSupportActionBar();
@@ -82,7 +80,8 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
         actionBar.setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(R.string.service_text_wedding_halls);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        recyclerView = findViewById(R.id.recycler_view);
         hallsList = new ArrayList<>();
         mAdapter = new HallsAdapter(this, hallsList, this);
 
@@ -109,7 +108,7 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
 
         if (isConnected) {
 
-            new fetchHalls().execute (  );
+            loadHallList();
 
         }else{
 
@@ -125,168 +124,138 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
 
             snackbar.setActionTextColor(Color.RED);
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
 
             pbar.setVisibility(View.GONE);
 
-
         }
 
     }
 
 
 
-       public class fetchHalls extends AsyncTask<String, Void, SoapObject> {
-           @Override
-           protected void onPreExecute() {
-               super.onPreExecute ();
-               pbar.setVisibility ( View.VISIBLE );
-               pbar.setIndeterminate ( false );
+    private void loadHallList() {
 
-           }
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-           @Override
-           protected SoapObject doInBackground(String... params) {
-               SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
-               SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-               envelope.setOutputSoapObject ( request );
+                        try {
 
-               HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
-               try {
+                            JSONObject obj = new JSONObject(response);
 
-                   androidHttpTransport.call ( SOAP_ACTION, envelope );
-               } catch (Exception e) {
-                   e.printStackTrace ();
+                            JSONArray hallArray = obj.getJSONArray("hall");
+                            Log.d("Json Array", "" +hallArray);
 
-                   return null;
+                            for (int i=0; i < hallArray.length(); i++){
 
-               }
+                                JSONObject hallObject = hallArray.getJSONObject(i);
 
-               try {
-                   result = (SoapObject) envelope.getResponse ();
-               } catch (SoapFault soapFault) {
-                   soapFault.printStackTrace ();
+                               String hall_id =  hallObject.getString("hall_id");
+                               String hall_image = hallObject.getString("hall_image");
+                               String hall_name = hallObject.getString("hall_name");
+                               String hall_location = hallObject.getString("hall_location");
+                               String hall_price = hallObject.getString("hall_price");
+                               String hall_size = hallObject.getString("hall_size");
+                               String hall_desp = hallObject.getString("hall_desp");
 
-                   return null;
+                               Halls hall = new Halls ();
 
-               }
+                               hall.setId ( hall_id );
+                               hall.setName ( hall_name );
+                               hall.setImage ( hall_image );
+                               hall.setLocation ( hall_location );
+                               hall.setPrice ( hall_price );
+                               hall.setSize ( hall_size );
+                               hall.setDesp ( hall_desp );
 
-               for (int i = 0; i < result.getPropertyCount (); i++) {
+                               hallsList.add ( hall );
 
-                   PropertyInfo pi = new PropertyInfo ();
-                   result.getPropertyInfo ( i, pi );
-                   Object property = result.getProperty ( i );
-                   if (pi.name.equals ( "hall" ) && property instanceof SoapObject) {
-                       SoapObject transDetail = (SoapObject) property;
+                               pbar.setVisibility ( View.GONE );
+                               mAdapter.notifyDataSetChanged ();
 
+                            }
 
-                       String hall_id = ((String) transDetail.getProperty ( "ID" ).toString ());
-                       String hall_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                       String hall_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                       String hall_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
-                       String hall_price = (String) transDetail.getProperty ( "Price" ).toString ();
-                       String hall_size = (String) transDetail.getProperty ( "Size" ).toString ();
-                       String hall_desp = (String) transDetail.getProperty ( "Des_ar" ).toString ();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                       Halls hall = new Halls ();
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
-                       hall.setId ( hall_id );
-                       hall.setName ( hall_name );
-                       hall.setImage ( "http://farhatty.com/" + hall_image );
-                       hall.setLocation ( hall_location );
-                       hall.setPrice ( hall_price );
-                       hall.setSize ( hall_size );
-                       hall.setDesp ( hall_desp );
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-                       hallsList.add ( hall );
-
-                   }
-               }
-               return request;
-           }
-
-           @Override
-           protected void onPostExecute(SoapObject response) {
-               super.onPostExecute ( response );
-
-               if (response == null) {
-
-                   dialogFailedRetry ();
-
-               } else {
-
-                   pbar.setVisibility ( View.GONE );
-                   mAdapter.notifyDataSetChanged ();
-
-               }
-           }
-
-       }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
+        requestQueue.add(stringRequest);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // close search view on back button pressed
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-
-        }
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        // close search view on back button pressed
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
 
     @Override
     public void onHallSelected(Halls halls) {
@@ -314,7 +283,7 @@ public class WeddingHallsActivity extends AppCompatActivity implements HallsAdap
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchHalls().execute (  );
+           loadHallList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {

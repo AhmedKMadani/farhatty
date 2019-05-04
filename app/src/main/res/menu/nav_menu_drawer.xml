@@ -8,20 +8,24 @@
         <item
             android:id="@+id/nav_home"
             android:title="@string/nav_text_home"
+            android:icon="@drawable/ic_baseline_home_24px"
             />
 
         <item
             android:id="@+id/nav_service"
             android:title="@string/nav_text_service"
+            android:icon="@drawable/ic_baseline_store_24px"
           />
         <item
             android:id="@+id/nav_offer"
             android:title="@string/nav_text_offer"
+            android:icon="@drawable/ic_baseline_local_offer_24px"
            />
 
         <item
             android:id="@+id/nav_track"
             android:title="@string/nav_text_track"
+            android:icon="@drawable/ic_baseline_search_24px"
             />
 
     </group>
@@ -32,16 +36,19 @@
         <item
                 android:id="@+id/nav_faq"
                 android:title="@string/nav_text_faq"
+                android:icon="@drawable/ic_baseline_contact_support_24px"
             />
         <item
             android:id="@+id/nav_contact_us"
             android:title="@string/nav_text_contact"
+            android:icon="@drawable/ic_baseline_forum_24px"
             />
 
         <item
             android:id="@+id/nav_rate"
             android:checkable="false"
-            android:title="@string/nav_text_rate" />
+            android:title="@string/nav_text_rate"
+            android:icon="@drawable/ic_baseline_grade_24px"/>
         </menu>
     </item>
 </menu>

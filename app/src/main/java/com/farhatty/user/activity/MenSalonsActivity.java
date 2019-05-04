@@ -25,13 +25,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
 import com.farhatty.user.adapter.MenSalonsAdapter;
+import com.farhatty.user.model.Artist;
 import com.farhatty.user.model.Men;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -55,12 +66,8 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-    SoapObject result = null;
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/men_salon.json";
 
-    private static String SOAP_ACTION = "http://farhatty.sd/GetbarbarShop";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "GetbarbarShop";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
 
 
     @Override
@@ -71,18 +78,18 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        pbar = (ProgressBar) findViewById(R.id.pbar);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+        pbar = findViewById(R.id.pbar);
+        coordinatorLayout = findViewById(R.id
                 .coordinatorLayout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.service_text_ms);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         menList = new ArrayList<>();
         mAdapter = new MenSalonsAdapter (this, menList, this);
 
@@ -109,7 +116,7 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
 
         if (isConnected) {
 
-            new fetchMenSalons().execute (  );
+            loadMenSalonList();
 
 
         }else{
@@ -128,7 +135,7 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
             snackbar.setActionTextColor( Color.RED);
 
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
 
@@ -139,160 +146,131 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
     }
 
 
+    private void loadMenSalonList() {
 
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
-    public class fetchMenSalons extends AsyncTask<String, Void, SoapObject> {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pbar.setVisibility ( View.VISIBLE );
-            pbar.setIndeterminate(false);
+                        try {
 
-        }
+                            JSONObject obj = new JSONObject(response);
 
+                            JSONArray salonArray = obj.getJSONArray("salon");
+                            Log.d("Json Array", "" + salonArray);
 
-        @Override
-        protected SoapObject doInBackground(String... params) {
+                            for (int i=0; i < salonArray.length(); i++){
 
-            SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-            envelope.setOutputSoapObject ( request );
+                                JSONObject salonObject = salonArray.getJSONObject(i);
 
-            HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
-            try {
+                                String salon_id =  salonObject.getString("salon_id");
+                                String salon_image = salonObject.getString("salon_image");
+                                String salon_name = salonObject.getString("salon_name");
+                                String salon_location = salonObject.getString("salon_location");
+                                String salon_desp = salonObject.getString("salon_desp");
 
-                androidHttpTransport.call ( SOAP_ACTION, envelope );
-            } catch (Exception e) {
-                e.printStackTrace ();
+                                Men men = new Men ();
 
-                return null;
-            }
+                                men.setId ( salon_id );
+                                men.setName ( salon_name );
+                                men.setImage ( salon_image );
+                                men.setLocation ( salon_location );
+                                men.setDesp ( salon_desp );
 
+                                menList.add ( men );
 
-            try {
-                result = (SoapObject) envelope.getResponse ();
-            } catch (SoapFault soapFault) {
-                soapFault.printStackTrace ();
+                                pbar.setVisibility ( View.GONE );
+                                mAdapter.notifyDataSetChanged ();
 
-                return null;
-            }
+                            }
 
-            for (int i = 0; i < result.getPropertyCount(); i++) {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                PropertyInfo pi = new PropertyInfo ();
-                result.getPropertyInfo ( i, pi );
-                Object property = result.getProperty ( i );
-                if (pi.name.equals ( "barbarShop" ) && property instanceof SoapObject) {
-                    SoapObject transDetail = (SoapObject) property;
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
-                    String men_id =   ( (String) transDetail.getProperty ( "ID" ).toString () );
-                    String men_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                    String men_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                    String men_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
-                    String men_desp = (String) transDetail.getProperty ( "Des_ar" ).toString ();
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-                    Men men = new Men ();
-
-                    men.setId ( men_id );
-                    men.setName ( men_name );
-                    men.setImage ("http://farhatty.com/"+men_image);
-                    men.setLocation ( men_location );
-                    men.setDesp ( men_desp );
-
-                    menList.add(men);
-
-                    Log.d ( "Farhatty", "Image : " + men_image);
-                    Log.d ( "Farhatty", "hall name : " + men_name );
-
-                }
-
-            }
-            return request;
-        }
-
-        @Override
-        protected void onPostExecute(SoapObject response) {
-            super.onPostExecute(response);
-
-            if(response == null){
-
-                dialogFailedRetry ();
-
-            }else {
-
-                pbar.setVisibility ( View.GONE );
-                mAdapter.notifyDataSetChanged ();
-
-            }
-      }
+        requestQueue.add(stringRequest);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // filter recycler view when query submitted
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//        // listening to search query text change
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                // filter recycler view when query submitted
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//                // filter recycler view when text is changed
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
 
-        int id = item.getItemId();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-        }
-    }
 
     @Override
     public void onMenSalonsSelected(Men Men) {
@@ -318,7 +296,7 @@ public class  MenSalonsActivity extends AppCompatActivity implements MenSalonsAd
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchMenSalons ().execute (  );
+               loadMenSalonList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {

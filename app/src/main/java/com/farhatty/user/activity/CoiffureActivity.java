@@ -25,13 +25,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
 import com.farhatty.user.adapter.CoiffureAdapter;
 import com.farhatty.user.model.Coiffure;
+import com.farhatty.user.model.Hotel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -55,13 +66,7 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-
-    SoapObject result = null;
-
-    private static String SOAP_ACTION = "http://farhatty.sd/GetCoiffeurs";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "GetCoiffeurs";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/coiffure.json";
 
 
     @Override
@@ -72,17 +77,17 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pbar = (ProgressBar) findViewById(R.id.pbar);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+        pbar = findViewById(R.id.pbar);
+        coordinatorLayout = findViewById(R.id
                 .coordinatorLayout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.service_text_coiffure);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         coiffureList = new ArrayList<>();
         mAdapter = new CoiffureAdapter(this, coiffureList, this);
 
@@ -108,7 +113,7 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
 
         if (isConnected) {
 
-            new fetchCoiffure().execute (  );
+           loadCoiffureList();
 
 
         }else{
@@ -127,7 +132,7 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
             snackbar.setActionTextColor( Color.RED);
 
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
 
@@ -138,160 +143,131 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
     }
 
 
-    public class fetchCoiffure extends AsyncTask<String, Void, SoapObject> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pbar.setVisibility ( View.VISIBLE );
-            pbar.setIndeterminate(false);
+    private void loadCoiffureList() {
 
-        }
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-        @Override
-        protected SoapObject doInBackground(String... params) {
+                        try {
 
-            SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
+                            JSONObject obj = new JSONObject(response);
 
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-            envelope.setOutputSoapObject ( request );
+                            JSONArray coiffureArray = obj.getJSONArray("coiffure");
+                            Log.d("Json Array", "" +coiffureArray);
 
-            HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
-            try {
-                //this is the actual part that will call the webservice
-                androidHttpTransport.call ( SOAP_ACTION, envelope );
-            } catch (Exception e) {
-                e.printStackTrace ();
+                            for (int i=0; i < coiffureArray.length(); i++){
 
-                 return null;
-            }
+                                JSONObject coiffureObject = coiffureArray.getJSONObject(i);
 
+                                String coiffure_id = coiffureObject.getString("coiffure_id");
+                                String coiffure_image = coiffureObject.getString("coiffure_image");
+                                String coiffure_name = coiffureObject.getString("coiffure_name");
+                                String coiffure_location = coiffureObject.getString("coiffure_location");
+                                String coiffure_desp = coiffureObject.getString("coiffure_desp");
 
-            try {
-                result = (SoapObject) envelope.getResponse ();
-            } catch (SoapFault soapFault) {
-                soapFault.printStackTrace ();
+                                Coiffure coiffure = new Coiffure();
 
-                return null;
-            }
+                                coiffure.setId ( coiffure_id );
+                                coiffure.setName ( coiffure_name );
+                                coiffure.setImage ( coiffure_image );
+                                coiffure.setLocation ( coiffure_location );
+                                coiffure.setDesp ( coiffure_desp );
 
-            for (int i = 0; i < result.getPropertyCount(); i++) {
+                                coiffureList.add ( coiffure);
 
-                PropertyInfo pi = new PropertyInfo ();
-                result.getPropertyInfo ( i, pi );
-                Object property = result.getProperty ( i );
-                if (pi.name.equals ( "coiffeurs" ) && property instanceof SoapObject) {
-                    SoapObject transDetail = (SoapObject) property;
+                                pbar.setVisibility ( View.GONE );
+                                mAdapter.notifyDataSetChanged ();
 
-                    String coiffure_id =  ( (String) transDetail.getProperty ( "ID" ).toString () );
-                    String coiffure_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                    String coiffure_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                    String coiffure_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
-                    String coiffure_desp = (String) transDetail.getProperty ( "Des_ar" ).toString ();
+                            }
 
-                    Coiffure coiffure = new Coiffure ();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                    coiffure.setId ( coiffure_id );
-                    coiffure.setName ( coiffure_name );
-                    coiffure.setImage ("http://farhatty.com/"+coiffure_image);
-                    coiffure.setLocation ( coiffure_location );
-                    coiffure.setDesp ( coiffure_desp );
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-                    coiffureList.add(coiffure);
-
-                    Log.d ( "Farhatty", "Image : " + coiffure_image);
-                    Log.d ( "Farhatty", "hall name : " + coiffure_name );
-
-                }
-
-            }
-            return request;
-        }
-
-        @Override
-        protected void onPostExecute(SoapObject response) {
-            super.onPostExecute(response);
-
-            if(response == null){
-
-                dialogFailedRetry ();
-
-            }else {
-
-                pbar.setVisibility ( View.GONE );
-                mAdapter.notifyDataSetChanged ();
-
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        requestQueue.add(stringRequest);
     }
 
 
-    @Override
-    public void onBackPressed() {
 
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        super.onBackPressed();
-    }
 
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
 
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
+
+
 
     @Override
     public void onCoiffureSelected(Coiffure Coiffure) {
@@ -318,7 +294,7 @@ public class  CoiffureActivity extends AppCompatActivity implements CoiffureAdap
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchCoiffure ().execute (  );
+                loadCoiffureList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {

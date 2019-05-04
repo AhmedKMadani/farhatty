@@ -28,3 +28,8 @@
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
 -keep class org.xmlpull.v1.** { *; }
+-keep class android.support.v7.widget.ShareActionProvider { *; }
+-keep class android.support.v4.app.** { *; }
+-keep interface android.support.v4.app.** { *; }
+-keep class android.support.v7.app.** { *; }
+-keep interface android.support.v7.app.** { *; }
