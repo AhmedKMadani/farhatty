@@ -25,13 +25,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
 import com.farhatty.user.adapter.ChefAdapter;
 import com.farhatty.user.model.Chef;
+import com.farhatty.user.model.Hotel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -55,12 +66,8 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-    SoapObject result = null;
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/chef.json";
 
-    private static String SOAP_ACTION = "http://farhatty.sd/Getchefs";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "Getchefs";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,18 +77,18 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pbar = (ProgressBar) findViewById(R.id.pbar);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+        pbar = findViewById(R.id.pbar);
+        coordinatorLayout = findViewById(R.id
                 .coordinatorLayout);
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.service_text_chefs);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         chefList = new ArrayList<>();
         mAdapter = new ChefAdapter(this, chefList, this);
 
@@ -110,7 +117,7 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
 
         if (isConnected) {
 
-           new fetchChefs().execute (  );
+          loadCheflList();
 
 
         }else{
@@ -128,7 +135,7 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
             snackbar.setActionTextColor( Color.RED);
 
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
 
@@ -139,155 +146,128 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
     }
 
 
-    public class fetchChefs extends AsyncTask<String, Void, SoapObject> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pbar.setVisibility ( View.VISIBLE );
-            pbar.setIndeterminate(false);
+    private void loadCheflList() {
 
-        }
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-        @Override
-        protected SoapObject doInBackground(String... params) {
+                        try {
 
-            SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-            envelope.setOutputSoapObject ( request );
+                            JSONObject obj = new JSONObject(response);
 
-            HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
-            try {
+                            JSONArray chefArray = obj.getJSONArray("chef");
+                            Log.d("Json Array", "" +chefArray);
 
-                androidHttpTransport.call ( SOAP_ACTION, envelope );
-            } catch (Exception e) {
-                e.printStackTrace ();
-                return null;
-            }
+                            for (int i=0; i < chefArray.length(); i++){
 
+                                JSONObject chefObject = chefArray.getJSONObject(i);
 
-            try {
-                result = (SoapObject) envelope.getResponse ();
-            } catch (SoapFault soapFault) {
-                soapFault.printStackTrace ();
-                return null;
-            }
+                                String chef_id =  chefObject.getString("chef_id");
+                                String chef_image = chefObject.getString("chef_image");
+                                String chef_name = chefObject.getString("chef_name");
+                                String chef_location = chefObject.getString("chef_location");
+                                String chef_desp = chefObject.getString("chef_desp");
 
-            for (int i = 0; i < result.getPropertyCount(); i++) {
+                                Chef chef = new Chef ();
 
-                PropertyInfo pi = new PropertyInfo ();
-                result.getPropertyInfo ( i, pi );
-                Object property = result.getProperty ( i );
-                if (pi.name.equals ( "chefs" ) && property instanceof SoapObject) {
-                    SoapObject transDetail = (SoapObject) property;
+                                chef.setId ( chef_id );
+                                chef.setName ( chef_name );
+                                chef.setImage ( chef_image );
+                                chef.setLocation ( chef_location );
+                                chef.setDesp ( chef_desp );
 
-                    String chef_id =  ( (String) transDetail.getProperty ( "ID" ).toString () );
-                    String chef_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                    String chef_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                    String chef_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
-                    String chef_desp = (String) transDetail.getProperty ( "Des_ar" ).toString ();
+                                chefList.add ( chef );
 
-                    Chef chef = new Chef ();
+                                pbar.setVisibility ( View.GONE );
+                                mAdapter.notifyDataSetChanged ();
 
-                    chef.setId ( chef_id );
-                    chef.setName ( chef_name );
-                    chef.setImage ("http://farhatty.com/"+chef_image);
-                    chef.setLocation ( chef_location );
-                    chef.setDesp ( chef_desp );
+                            }
 
-                    chefList.add(chef);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                    Log.d ( "Farhatty", "Image : " + chef_image);
-                    Log.d ( "Farhatty", "hall name : " + chef_name );
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
-                }
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-            }
-            return request;
-        }
-
-        @Override
-        protected void onPostExecute(SoapObject response) {
-            super.onPostExecute(response);
-
-            if(response == null){
-
-                dialogFailedRetry ();
-
-            }else {
-
-                pbar.setVisibility ( View.GONE );
-                mAdapter.notifyDataSetChanged ();
-
-            }
-        }
+        requestQueue.add(stringRequest);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
 
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
 
-            @Override
-            public boolean onQueryTextChange(String query) {
-
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-
-        }
-    }
 
     @Override
     public void onChefSelected(Chef Chef) {
@@ -312,7 +292,7 @@ public class ChefActivity extends AppCompatActivity implements ChefAdapter.ChefA
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchChefs ().execute (  );
+              loadCheflList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {

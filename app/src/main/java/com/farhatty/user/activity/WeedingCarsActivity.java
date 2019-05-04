@@ -26,7 +26,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -34,10 +38,17 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
 import com.farhatty.user.adapter.CarsAdapter;
+import com.farhatty.user.model.Artist;
 import com.farhatty.user.model.Cars;
 
 import java.util.ArrayList;
@@ -52,12 +63,7 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-    SoapObject result = null;
-
-    private static String SOAP_ACTION = "http://farhatty.sd/GetCras";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "GetCras";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/cars.json";
 
 
     @Override
@@ -69,11 +75,11 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
         StrictMode.setThreadPolicy(policy);
 
         ActionBar actionBar;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pbar = (ProgressBar) findViewById(R.id.pbar_wedding);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+        pbar = findViewById(R.id.pbar_wedding);
+        coordinatorLayout = findViewById(R.id
                 .coordinatorLayout);
 
 
@@ -82,7 +88,7 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
         actionBar.setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(R.string.service_text_cras);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         carList = new ArrayList<>();
         mAdapter = new CarsAdapter(this, carList, this);
 
@@ -109,7 +115,7 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
 
         if (isConnected) {
 
-            new fetchCars().execute (  );
+           loadCarsList();
 
 
         }else{
@@ -128,7 +134,7 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
             snackbar.setActionTextColor(Color.RED);
 
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
 
@@ -141,144 +147,128 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
 
 
 
-    public class fetchCars extends AsyncTask<String, Void, SoapObject> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pbar.setVisibility ( View.VISIBLE );
-            pbar.setIndeterminate(false);
+    private void loadCarsList() {
 
-        }
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-        @Override
-        protected SoapObject doInBackground(String... params) {
+                        try {
 
-            SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-            envelope.setOutputSoapObject ( request );
-            HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
-            try {
+                            JSONObject obj = new JSONObject(response);
 
-                androidHttpTransport.call ( SOAP_ACTION, envelope );
-            } catch (Exception e) {
-                e.printStackTrace ();
-                dialogFailedRetry ();
-            }
+                            JSONArray carArray = obj.getJSONArray("car");
+                            Log.d("Json Array", "" +carArray);
 
+                            for (int i=0; i < carArray.length(); i++){
 
-            try {
-                result = (SoapObject) envelope.getResponse ();
-            } catch (SoapFault soapFault) {
-                soapFault.printStackTrace ();
-                dialogFailedRetry ();
-            }
+                                JSONObject carObject = carArray.getJSONObject(i);
 
-            for (int i = 0; i < result.getPropertyCount(); i++) {
+                                String car_id =  carObject.getString("car_id");
+                                String car_image = carObject.getString("car_image");
+                                String car_name = carObject.getString("car_name");
+                                String car_location = carObject.getString("car_location");
+                                String car_desp = carObject.getString("car_desp");
 
-                PropertyInfo pi = new PropertyInfo ();
-                result.getPropertyInfo ( i, pi );
-                Object property = result.getProperty ( i );
-                if (pi.name.equals ( "Cras" ) && property instanceof SoapObject) {
-                    SoapObject transDetail = (SoapObject) property;
+                                Cars cars = new Cars ();
 
-                    String car_id =  ( (String) transDetail.getProperty ( "ID" ).toString () );
-                    String car_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                    String car_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                    String car_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
+                                cars.setId ( car_id );
+                                cars.setName ( car_name );
+                                cars.setImage ( car_image );
+                                cars.setLocation ( car_location );
+                                cars.setDesp ( car_desp );
 
-                    Cars car = new Cars ();
+                                carList.add ( cars );
 
-                    car.setId ( car_id );
-                    car.setName ( car_name );
-                    car.setImage ("http://farhatty.com/"+car_image);
-                    car.setLocation ( car_location );
+                                pbar.setVisibility ( View.GONE );
+                                mAdapter.notifyDataSetChanged ();
 
-                    carList.add(car);
+                            }
 
-                    Log.d ( "Farhatty", "Image : " + car_image);
-                    Log.d ( "Farhatty", "hall name : " + car_name );
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                }
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
-            }
-            return request;
-        }
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        @Override
-        protected void onPostExecute(SoapObject response) {
-            super.onPostExecute(response);
-            pbar.setVisibility ( View.GONE );
-            mAdapter.notifyDataSetChanged();
-        }
+        requestQueue.add(stringRequest);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) menu.findItem(R.id.action_search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//
+//                mAdapter.getFilter().filter(query);
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
 
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-
-        }
-    }
 
     @Override
     public void onCarSelected(Cars Cars) {
@@ -299,7 +289,7 @@ public class WeedingCarsActivity extends AppCompatActivity implements CarsAdapte
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchCars ().execute (  );
+                loadCarsList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {

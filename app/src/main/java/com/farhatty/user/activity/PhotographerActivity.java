@@ -25,13 +25,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.farhatty.user.R;
 import com.farhatty.user.Utiliti.ConnectivityReceiver;
 import com.farhatty.user.Utiliti.MyDividerItemDecoration;
 import com.farhatty.user.adapter.PhotographerAdapter;
+import com.farhatty.user.model.Artist;
 import com.farhatty.user.model.Photo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -55,12 +66,8 @@ public class PhotographerActivity extends AppCompatActivity implements Photograp
     private ProgressBar pbar;
     private CoordinatorLayout coordinatorLayout;
 
-    SoapObject result = null;
 
-    private static String SOAP_ACTION = "http://farhatty.sd/GetPhotography";
-    private static String NAMESPACE = "http://farhatty.sd/";
-    private static String METHOD_NAME = "GetPhotography";
-    private static String URL = "http://farhatty.sd/WebService.asmx";
+    private static String URL = "http://devandroid.pixels-sd.com/weddingApp/photo.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +114,7 @@ public class PhotographerActivity extends AppCompatActivity implements Photograp
 
         if (isConnected) {
 
-            new fetchphotos ().execute ();
+            loadPhotoList();
 
 
         } else {
@@ -136,160 +143,129 @@ public class PhotographerActivity extends AppCompatActivity implements Photograp
     }
 
 
-    public class fetchphotos extends AsyncTask <String, Void, SoapObject> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute ();
-            pbar.setVisibility ( View.VISIBLE );
-            pbar.setIndeterminate ( false );
 
-        }
+    private void loadPhotoList() {
 
+        pbar.setVisibility ( View.VISIBLE );
+        pbar.setIndeterminate ( false );
 
-        @Override
-        protected SoapObject doInBackground(String... params) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-            SoapObject request = new SoapObject ( NAMESPACE, METHOD_NAME );
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope ( SoapEnvelope.VER11 );
-            envelope.setOutputSoapObject ( request );
-            HttpTransportSE androidHttpTransport = new HttpTransportSE ( URL );
+                        try {
 
-            try {
+                            JSONObject obj = new JSONObject(response);
 
-                androidHttpTransport.call ( SOAP_ACTION, envelope );
-            } catch (Exception e) {
-                e.printStackTrace ();
+                            JSONArray photoArray = obj.getJSONArray("photo");
+                            Log.d("Json Array", "" +photoArray);
 
-                return null;
-            }
+                            for (int i=0; i < photoArray.length(); i++){
 
+                                JSONObject photoObject = photoArray.getJSONObject(i);
 
-            try {
-                result = (SoapObject) envelope.getResponse ();
-            } catch (SoapFault soapFault) {
-                soapFault.printStackTrace ();
+                                String photo_id =  photoObject.getString("photo_id");
+                                String photo_image = photoObject.getString("photo_image");
+                                String photo_name = photoObject.getString("photo_name");
+                                String photo_location = photoObject.getString("photo_location");
+                                String photo_desp = photoObject.getString("photo_desp");
 
-                return null;
+                                Photo photo = new Photo ();
 
-            }
+                                photo.setId ( photo_id );
+                                photo.setName ( photo_name );
+                                photo.setImage ( photo_image );
+                                photo.setLocation ( photo_location );
+                                photo.setDesp ( photo_desp );
 
-            for (int i = 0; i < result.getPropertyCount (); i++) {
+                                photoList.add ( photo );
 
-                PropertyInfo pi = new PropertyInfo ();
-                result.getPropertyInfo ( i, pi );
-                Object property = result.getProperty ( i );
-                if (pi.name.equals ( "photography" ) && property instanceof SoapObject) {
-                    SoapObject transDetail = (SoapObject) property;
+                                pbar.setVisibility ( View.GONE );
+                                mAdapter.notifyDataSetChanged ();
 
-                    String photo_id = ((String) transDetail.getProperty ( "ID" ).toString ());
-                    String photo_image = (String) transDetail.getProperty ( "Image" ).toString ();
-                    String photo_name = (String) transDetail.getProperty ( "Name_ar" ).toString ();
-                    String photo_location = (String) transDetail.getProperty ( "Loacation_ar" ).toString ();
-                    String photo_desp = (String) transDetail.getProperty ( "Des_ar" ).toString ();
+                            }
 
-                    Photo photo = new Photo ();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                    photo.setId ( photo_id );
-                    photo.setName ( photo_name );
-                    photo.setImage ( "http://farhatty.com/" + photo_image );
-                    photo.setLocation ( photo_location );
-                    photo.setDesp ( photo_desp );
+                        dialogFailedRetry ();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("Error " , " " +error.getMessage());
+                    }
+                });
 
-                    photoList.add ( photo );
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-                    Log.d ( "Farhatty", "Image : " + photo_image );
-                    Log.d ( "Farhatty", "hall name : " + photo_name );
-
-                }
-
-
-            }
-            return request;
-        }
-
-        @Override
-        protected void onPostExecute(SoapObject response) {
-            super.onPostExecute ( response );
-
-            if(response == null){
-
-                dialogFailedRetry ();
-
-            }else {
-
-                pbar.setVisibility ( View.GONE );
-                mAdapter.notifyDataSetChanged ();
-
-            }
-        }
+        requestQueue.add(stringRequest);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater ().inflate ( R.menu.menu_main, menu );
 
-        SearchManager searchManager = (SearchManager) getSystemService ( Context.SEARCH_SERVICE );
-        searchView = (SearchView) menu.findItem ( R.id.action_search )
-                .getActionView ();
-        searchView.setSearchableInfo ( searchManager
-                .getSearchableInfo ( getComponentName () ) );
-        searchView.setMaxWidth ( Integer.MAX_VALUE );
 
-        searchView.setOnQueryTextListener ( new SearchView.OnQueryTextListener () {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater ().inflate ( R.menu.menu_main, menu );
+//
+//        SearchManager searchManager = (SearchManager) getSystemService ( Context.SEARCH_SERVICE );
+//        searchView = (SearchView) menu.findItem ( R.id.action_search )
+//                .getActionView ();
+//        searchView.setSearchableInfo ( searchManager
+//                .getSearchableInfo ( getComponentName () ) );
+//        searchView.setMaxWidth ( Integer.MAX_VALUE );
+//
+//        searchView.setOnQueryTextListener ( new SearchView.OnQueryTextListener () {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+//                mAdapter.getFilter ().filter ( query );
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String query) {
+//                // filter recycler view when text is changed
+//                mAdapter.getFilter ().filter ( query );
+//                return false;
+//            }
+//        } );
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        int id = item.getItemId ();
+//
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                onBackPressed ();
+//                return true;
+//        }
+//
+//        if (id == R.id.action_search) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected ( item );
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//        if (!searchView.isIconified ()) {
+//            searchView.setIconified ( true );
+//            return;
+//        }
+//        super.onBackPressed ();
+//    }
 
-                mAdapter.getFilter ().filter ( query );
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                mAdapter.getFilter ().filter ( query );
-                return false;
-            }
-        } );
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId ();
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed ();
-                return true;
-        }
-
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected ( item );
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (!searchView.isIconified ()) {
-            searchView.setIconified ( true );
-            return;
-        }
-        super.onBackPressed ();
-    }
-
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility ();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility ( flags );
-            // getWindow().setStatusBarColor(Color.WHITE);
-        }
-    }
 
     @Override
     public void onPhotographerSelected(Photo Photo) {
@@ -316,7 +292,7 @@ public class PhotographerActivity extends AppCompatActivity implements Photograp
         builder.setPositiveButton(R.string.TRY_AGAIN, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new fetchphotos ().execute (  );
+                loadPhotoList();
             }
         });
         builder.setNegativeButton(R.string.Close, new DialogInterface.OnClickListener() {
